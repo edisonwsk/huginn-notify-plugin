@@ -1,3 +1,5 @@
+[English Documentation](README.md)
+
 # Huginn 通知插件
 
 一个用于通过 webhook 向 Huginn 代理发送构建通知的 Jenkins 插件。

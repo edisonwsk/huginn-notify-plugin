@@ -1,3 +1,5 @@
+[简体中文文档](README_zh_CN.md)
+
 # Huginn Notify Plugin
 
 A Jenkins plugin that sends build notifications to Huginn agents via webhooks.
