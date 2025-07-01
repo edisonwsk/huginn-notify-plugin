@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Created-By: Maven Archiver 3.6.0
+Build-Jdk-Spec: 11
+Specification-Title: Huginn Notify Plugin
+Specification-Version: 1.0
+Implementation-Title: Huginn Notify Plugin
+Implementation-Version: 1.0.0-SNAPSHOT
+Group-Id: io.jenkins.plugins
+Artifact-Id: huginn-notify
+Short-Name: huginn-notify
+Long-Name: Huginn Notify Plugin
+Url: https://github.com/example/huginn-notify-plugin
+Plugin-Version: 1.0.0-SNAPSHOT (private-06/30/2025 13:42-wushangkun)
+Hudson-Version: 2.426.1
+Jenkins-Version: 2.426.1
+Plugin-Dependencies: workflow-step-api:639.v6eca_cd8c04a_a_,structs:324.
+ va_f5d6774f3a_d
+Plugin-Developers: Developer:developer:developer@example.com
+Plugin-License-Name: MIT License
+Plugin-License-Url: https://opensource.org/licenses/MIT
+Plugin-ScmConnection: scm:git:https://github.com/example/huginn-notify-p
+ lugin.git
+Plugin-ScmTag: HEAD
+Plugin-ScmUrl: https://github.com/example/huginn-notify-plugin
+

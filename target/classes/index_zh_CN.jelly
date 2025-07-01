@@ -1,0 +1,14 @@
+<?jelly escape-by-default='true'?>
+<div>
+    此插件允许 Jenkins 通过 webhook 向 Huginn 代理发送构建通知。
+    <br/>
+    功能特性：
+    <ul>
+        <li>向 Huginn 代理发送通知</li>
+        <li>支持传统自由风格作业和流水线作业</li>
+        <li>可配置的通知条件（成功、失败、不稳定、已中止）</li>
+        <li>支持变量替换的自定义消息模板</li>
+        <li>全局和每个作业的配置选项</li>
+        <li>多语言支持（英文和中文）</li>
+    </ul>
+</div>

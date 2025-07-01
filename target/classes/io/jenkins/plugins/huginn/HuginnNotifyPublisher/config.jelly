@@ -1,0 +1,44 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+    <f:entry title="${%Webhook URL}" field="webhookUrl" description="${%Leave empty to use global configuration}">
+        <f:textbox />
+    </f:entry>
+    
+    <f:entry title="${%API Key}" field="apiKey" description="${%Leave empty to use global configuration}">
+        <f:password />
+    </f:entry>
+    
+    <f:advanced>
+        <f:section title="${%Notification Settings}">
+            <f:entry title="${%Notify on Start}" field="notifyOnStart">
+                <f:checkbox />
+            </f:entry>
+            
+            <f:entry title="${%Notify on Success}" field="notifyOnSuccess">
+                <f:checkbox />
+            </f:entry>
+            
+            <f:entry title="${%Notify on Failure}" field="notifyOnFailure">
+                <f:checkbox />
+            </f:entry>
+            
+            <f:entry title="${%Notify on Unstable}" field="notifyOnUnstable">
+                <f:checkbox />
+            </f:entry>
+            
+            <f:entry title="${%Notify on Aborted}" field="notifyOnAborted">
+                <f:checkbox />
+            </f:entry>
+        </f:section>
+        
+        <f:section title="${%Message Settings}">
+            <f:entry title="${%Custom Message}" field="customMessage" 
+                     description="${%Use variables like ${BUILD_NUMBER}, ${PROJECT_NAME}, ${BUILD_RESULT}, etc.}">
+                <f:textarea />
+            </f:entry>
+        </f:section>
+    </f:advanced>
+    
+    <f:validateButton title="${%Test Connection}" progress="${%Testing...}" 
+                     method="testConnection" with="webhookUrl,apiKey" />
+</j:jelly>

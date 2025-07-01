@@ -1,0 +1,227 @@
+pipeline {
+    agent any
+    
+    parameters {
+        choice(
+            name: 'ENVIRONMENT',
+            choices: ['dev', 'staging', 'prod'],
+            description: 'Target deployment environment'
+        )
+        booleanParam(
+            name: 'SEND_NOTIFICATIONS',
+            defaultValue: true,
+            description: 'Send build notifications to Huginn'
+        )
+    }
+    
+    environment {
+        // Use Jenkins credentials for sensitive data
+        HUGINN_API_KEY = credentials('huginn-api-key')
+        BUILD_VERSION = "${BUILD_NUMBER}-${GIT_COMMIT.take(7)}"
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+                echo "Checked out code for build #${BUILD_NUMBER}"
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                echo 'Building application...'
+                // Add your build commands here
+                // sh 'mvn clean compile'
+                // sh 'npm install && npm run build'
+            }
+            post {
+                always {
+                    script {
+                        if (params.SEND_NOTIFICATIONS) {
+                            huginnNotify(
+                                title: 'Build Stage Complete',
+                                message: "Build stage completed for ${env.JOB_NAME} #${BUILD_NUMBER}\nEnvironment: ${params.ENVIRONMENT}",
+                                severity: 'info'
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                echo 'Running tests...'
+                // Add your test commands here
+                // sh 'mvn test'
+                // sh 'npm test'
+            }
+            post {
+                always {
+                    // Archive test results
+                    // publishTestResults testResultsPattern: 'target/surefire-reports/*.xml'
+                    echo 'Test stage completed'
+                }
+                failure {
+                    script {
+                        if (params.SEND_NOTIFICATIONS) {
+                            huginnNotify(
+                                title: 'Tests Failed',
+                                message: """
+                                ❌ Tests failed for ${env.JOB_NAME} #${BUILD_NUMBER}
+                                
+                                Environment: ${params.ENVIRONMENT}
+                                Branch: ${env.BRANCH_NAME ?: 'N/A'}
+                                
+                                Check test results: ${env.BUILD_URL}testReport
+                                Console output: ${env.BUILD_URL}console
+                                """,
+                                severity: 'error'
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        
+        stage('Package') {
+            steps {
+                echo 'Packaging application...'
+                // Add your packaging commands here
+                // sh 'mvn package'
+                // sh 'docker build -t myapp:${BUILD_VERSION} .'
+            }
+        }
+        
+        stage('Deploy') {
+            when {
+                anyOf {
+                    branch 'main'
+                    branch 'develop'
+                    expression { params.ENVIRONMENT != 'dev' }
+                }
+            }
+            steps {
+                echo "Deploying to ${params.ENVIRONMENT} environment..."
+                // Add your deployment commands here
+                // sh "kubectl apply -f k8s/${params.ENVIRONMENT}/"
+                // sh "docker run -d myapp:${BUILD_VERSION}"
+                
+                script {
+                    if (params.SEND_NOTIFICATIONS) {
+                        huginnNotify(
+                            title: 'Deployment Started',
+                            message: """
+                            🚀 Starting deployment to ${params.ENVIRONMENT}
+                            
+                            Project: ${env.JOB_NAME}
+                            Version: ${BUILD_VERSION}
+                            Branch: ${env.BRANCH_NAME ?: 'N/A'}
+                            """,
+                            severity: 'info'
+                        )
+                    }
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            echo 'Pipeline completed'
+            // Clean up workspace if needed
+            // cleanWs()
+        }
+        
+        success {
+            script {
+                if (params.SEND_NOTIFICATIONS) {
+                    def message = """
+                    ✅ Pipeline completed successfully!
+                    
+                    Project: ${env.JOB_NAME}
+                    Build: #${BUILD_NUMBER}
+                    Environment: ${params.ENVIRONMENT}
+                    Version: ${BUILD_VERSION}
+                    Duration: ${currentBuild.durationString}
+                    Branch: ${env.BRANCH_NAME ?: 'N/A'}
+                    
+                    🔗 Build Details: ${env.BUILD_URL}
+                    📝 Changes: ${env.BUILD_URL}changes
+                    """
+                    
+                    huginnNotify(
+                        title: 'Pipeline Success',
+                        message: message,
+                        severity: 'success'
+                    )
+                }
+            }
+        }
+        
+        failure {
+            script {
+                if (params.SEND_NOTIFICATIONS) {
+                    huginnNotify(
+                        title: 'Pipeline Failed',
+                        message: """
+                        ❌ Pipeline failed!
+                        
+                        Project: ${env.JOB_NAME}
+                        Build: #${BUILD_NUMBER}
+                        Environment: ${params.ENVIRONMENT}
+                        Failed Stage: ${env.STAGE_NAME ?: 'Unknown'}
+                        Duration: ${currentBuild.durationString}
+                        
+                        🔍 Console Output: ${env.BUILD_URL}console
+                        📊 Build Details: ${env.BUILD_URL}
+                        """,
+                        severity: 'error'
+                    )
+                }
+            }
+        }
+        
+        unstable {
+            script {
+                if (params.SEND_NOTIFICATIONS) {
+                    huginnNotify(
+                        title: 'Pipeline Unstable',
+                        message: """
+                        ⚠️ Pipeline completed with warnings
+                        
+                        Project: ${env.JOB_NAME}
+                        Build: #${BUILD_NUMBER}
+                        Environment: ${params.ENVIRONMENT}
+                        
+                        Some tests may have failed or there are other issues.
+                        Please review: ${env.BUILD_URL}
+                        """,
+                        severity: 'warning'
+                    )
+                }
+            }
+        }
+        
+        aborted {
+            script {
+                if (params.SEND_NOTIFICATIONS) {
+                    huginnNotify(
+                        title: 'Pipeline Aborted',
+                        message: """
+                        🛑 Pipeline was aborted
+                        
+                        Project: ${env.JOB_NAME}
+                        Build: #${BUILD_NUMBER}
+                        Environment: ${params.ENVIRONMENT}
+                        
+                        The build was cancelled or timed out.
+                        """,
+                        severity: 'warning'
+                    )
+                }
+            }
+        }
+    }
+}

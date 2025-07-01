@@ -1,0 +1,59 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+    <f:section title="${%Global Huginn Configuration}">
+        <f:entry title="${%Enable Global Notifications}" field="globalEnabled">
+            <f:checkbox />
+        </f:entry>
+        
+        <f:entry title="${%Global Webhook URL}" field="globalWebhookUrl">
+            <f:textbox />
+        </f:entry>
+        
+        <f:entry title="${%Global API Key}" field="globalApiKey">
+            <f:password />
+        </f:entry>
+        
+        <f:entry title="${%Message Language}" field="messageLanguage">
+            <f:select>
+                <f:option value="auto">${%messageLanguage.auto}</f:option>
+                <f:option value="en">${%messageLanguage.en}</f:option>
+                <f:option value="zh">${%messageLanguage.zh}</f:option>
+            </f:select>
+        </f:entry>
+        
+        <f:validateButton title="${%Test Connection}" progress="${%Testing...}" 
+                         method="testConnection" with="globalWebhookUrl,globalApiKey" />
+    </f:section>
+    
+    <f:section title="${%Huginn Agent Configurations}">
+        <f:entry title="${%Agent Configurations}" field="configs">
+            <f:repeatable var="config" items="${instance.configs}" minimum="0">
+                <table width="100%">
+                    <f:entry title="${%Configuration Name}" field="name">
+                        <f:textbox value="${config.name}" />
+                    </f:entry>
+                    
+                    <f:entry title="${%Webhook URL}" field="webhookUrl">
+                        <f:textbox value="${config.webhookUrl}" />
+                    </f:entry>
+                    
+                    <f:entry title="${%API Key}" field="apiKey">
+                        <f:password value="${config.apiKey}" />
+                    </f:entry>
+                    
+                    <f:entry title="${%Enabled}" field="enabled">
+                        <f:checkbox checked="${config.enabled}" />
+                    </f:entry>
+                    
+                    <f:validateButton title="${%Test Connection}" progress="${%Testing...}" 
+                                     method="testConnection" with="webhookUrl,apiKey" />
+                </table>
+                <f:entry>
+                    <div align="right">
+                        <f:repeatableDeleteButton />
+                    </div>
+                </f:entry>
+            </f:repeatable>
+        </f:entry>
+    </f:section>
+</j:jelly>

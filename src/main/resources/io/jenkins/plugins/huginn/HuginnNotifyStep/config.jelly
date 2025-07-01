@@ -1,0 +1,30 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+    <f:entry title="${%Webhook URL}" field="webhookUrl" description="${%Leave empty to use global configuration}">
+        <f:textbox />
+    </f:entry>
+    
+    <f:entry title="${%API Key}" field="apiKey" description="${%Leave empty to use global configuration}">
+        <f:password />
+    </f:entry>
+    
+    <f:entry title="${%Title}" field="title" description="${%Message title}">
+        <f:textbox />
+    </f:entry>
+    
+    <f:entry title="${%Message}" field="message" description="${%Use variables like ${BUILD_NUMBER}, ${PROJECT_NAME}, ${BUILD_RESULT}, etc.}">
+        <f:textarea />
+    </f:entry>
+    
+    <f:entry title="${%Severity}" field="severity" description="${%Message severity level}">
+        <f:select>
+            <f:option value="info">Info</f:option>
+            <f:option value="success">Success</f:option>
+            <f:option value="warning">Warning</f:option>
+            <f:option value="error">Error</f:option>
+        </f:select>
+    </f:entry>
+    
+    <f:validateButton title="${%Test Connection}" progress="${%Testing...}" 
+                     method="testConnection" with="webhookUrl,apiKey" />
+</j:jelly>

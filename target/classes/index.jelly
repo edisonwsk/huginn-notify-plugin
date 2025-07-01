@@ -1,0 +1,14 @@
+<?jelly escape-by-default='true'?>
+<div>
+    This plugin enables Jenkins to send build notifications to Huginn agents via webhooks.
+    <br/>
+    Features:
+    <ul>
+        <li>Send notifications to Huginn agents</li>
+        <li>Support for traditional freestyle jobs and pipeline jobs</li>
+        <li>Configurable notification conditions (success, failure, unstable, aborted)</li>
+        <li>Custom message templates with variable substitution</li>
+        <li>Global and per-job configuration options</li>
+        <li>Multi-language support (English and Chinese)</li>
+    </ul>
+</div>

@@ -1,0 +1,5 @@
+# informational; use java -jar sezpoz.jar to see authoritative contents
+io.jenkins.plugins.huginn.HuginnGlobalConfiguration
+io.jenkins.plugins.huginn.HuginnNotifyConfig$DescriptorImpl
+io.jenkins.plugins.huginn.HuginnNotifyPublisher$DescriptorImpl
+io.jenkins.plugins.huginn.HuginnNotifyStep$DescriptorImpl

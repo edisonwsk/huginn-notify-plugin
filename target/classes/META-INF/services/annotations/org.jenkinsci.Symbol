@@ -1,0 +1,2 @@
+io.jenkins.plugins.huginn.HuginnGlobalConfiguration
+io.jenkins.plugins.huginn.HuginnNotifyPublisher$DescriptorImpl
